@@ -1,0 +1,33 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main  # Sostituisci 'main' con il nome del tuo branch se necessario
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Modifica questa versione con quella che usi
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build  # Modifica questo se il tuo comando di build è diverso
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0
+      with:
+        credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --only hosting
+        project: localease-c9a3e  # Sostituisci con il Project ID del tuo progetto Firebase
